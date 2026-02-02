@@ -47,7 +47,7 @@
         }
         .btn-container {
             margin-top: 20px;
-            height: 60px;
+            height: 100px; /* increased so the No button has space to move */
             position: relative;
         }
         button {
@@ -63,7 +63,7 @@
         }
         #yesBtn { background-color: #ff4d6d; }
         #yesBtn:hover { transform: scale(1.1); }
-        #noBtn { background-color: #333; position: absolute; }
+        #noBtn { background-color: #333; position: absolute; left: 60%; top: 10px; }
         .hidden { display: none; }
     </style>
 </head>
@@ -99,11 +99,12 @@
         const noBtn = document.getElementById('noBtn');
         const questionDiv = document.getElementById('question');
         const successDiv = document.getElementById('success');
+        const btnContainer = document.querySelector('.btn-container');
 
         function moveButton() {
-            // Updated logic to keep button within the card area or screen
-            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+            // Keep the button inside the btn-container bounds
+            const maxX = Math.max(0, btnContainer.clientWidth - noBtn.offsetWidth);
+            const maxY = Math.max(0, btnContainer.clientHeight - noBtn.offsetHeight);
             
             const x = Math.random() * maxX;
             const y = Math.random() * maxY;
@@ -112,10 +113,20 @@
             noBtn.style.top = `${y}px`;
         }
 
+        // Move on hover
         noBtn.addEventListener('mouseover', moveButton);
+
+        // For touch devices: move and prevent default so the click isn't fired
         noBtn.addEventListener('touchstart', (e) => { 
             e.preventDefault(); 
             moveButton(); 
+        }, { passive: false });
+
+        // Prevent actual click action: move the button instead of letting it be clicked
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            moveButton();
         });
 
         yesBtn.addEventListener('click', () => {
