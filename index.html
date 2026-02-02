@@ -26,10 +26,10 @@
             width: 90%;
             max-width: 400px;
         }
-        /* Updated to style both images and videos */
-        .gif-area img, .gif-area video {
-            width: 150px;
-            height: 150px;
+        .gif-area img {
+            width: 100%;
+            height: auto;
+            max-height: 200px;
             object-fit: cover;
             border-radius: 10px;
         }
@@ -41,6 +41,7 @@
         .btn-container {
             margin-top: 20px;
             height: 60px;
+            position: relative; /* Added relative positioning for safety */
         }
         button {
             padding: 12px 30px;
@@ -63,10 +64,8 @@
     <div class="card">
         <div id="question">
             <div class="gif-area">
-                <video autoplay loop muted playsinline>
-                    <source src="1000091870.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+                <img src="https://media1.tenor.com/m/h9C8j0MhCoAAAAAC/puss-in-boots-cat.gif" 
+                     alt="Cute Cat">
             </div>
             <h1>Afreen will you be my valentine?</h1>
             <div class="btn-container">
@@ -77,10 +76,8 @@
         
         <div id="success" class="hidden">
             <div class="gif-area">
-                <video autoplay loop muted playsinline>
-                    <source src="1000091872.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+                <img src="https://media1.tenor.com/m/7zKdaT8vjH8AAAAC/excited-hockey.gif" 
+                     alt="Yay">
             </div>
             <h1>YAY! 💖</h1>
         </div>
@@ -93,19 +90,31 @@
         const successDiv = document.getElementById('success');
 
         function moveButton() {
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 20);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 20);
+            // Updated logic to keep button within the screen bounds
+            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+            
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
+            
             noBtn.style.left = `${x}px`;
             noBtn.style.top = `${y}px`;
         }
 
         noBtn.addEventListener('mouseover', moveButton);
-        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
+        noBtn.addEventListener('touchstart', (e) => { 
+            e.preventDefault(); 
+            moveButton(); 
+        });
 
         yesBtn.addEventListener('click', () => {
             questionDiv.classList.add('hidden');
             successDiv.classList.remove('hidden');
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            confetti({ 
+                particleCount: 150, 
+                spread: 70, 
+                origin: { y: 0.6 } 
+            });
         });
     </script>
 </body>
