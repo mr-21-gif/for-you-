@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Afreen</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #ffe4e1;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+        .gif-area img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        h1 {
+            color: #ff4d6d;
+            font-size: 26px;
+            margin: 20px 0;
+        }
+        .btn-container {
+            margin-top: 20px;
+            height: 60px;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.2s;
+            margin: 0 10px;
+        }
+        #yesBtn { background-color: #ff4d6d; }
+        #yesBtn:hover { transform: scale(1.1); }
+        #noBtn { background-color: #333; position: absolute; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div id="question">
+            <div class="gif-area">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2QyZ.../giphy.gif" 
+                     onerror="this.src='https://media.giphy.com/media/0OgdJVNjbcIwa2pH03/giphy.gif'"
+                     alt="Cute Cat">
+            </div>
+            <h1>Afreen will you be my valentine?</h1>
+            <div class="btn-container">
+                <button id="yesBtn">Yes 💖</button>
+                <button id="noBtn">No</button>
+            </div>
+        </div>
+        <div id="success" class="hidden">
+            <div class="gif-area">
+                <img src="https://media.giphy.com/media/iCVzZwwE6QhTVT6xN3/giphy.gif" alt="Happy">
+            </div>
+            <h1>YAY! 💖</h1>
+        </div>
+    </div>
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const questionDiv = document.getElementById('question');
+        const successDiv = document.getElementById('success');
+
+        function moveButton() {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 20);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 20);
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+        }
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
+
+        yesBtn.addEventListener('click', () => {
+            questionDiv.classList.add('hidden');
+            successDiv.classList.remove('hidden');
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        });
+    </script>
+</body>
+</html>
+
