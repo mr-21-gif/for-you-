@@ -16,8 +16,8 @@
             align-items: center;
             min-height: 100vh;
             background-color: #ffe4e1;
-            font-family: 'Poppins', sans-serif; /* Cleaner font */
-            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden; /* Prevents background scrolling */
             transition: background-color 1s ease;
         }
 
@@ -32,7 +32,6 @@
             max-width: 400px;
             position: relative;
             z-index: 10;
-            transition: opacity 0.5s ease;
         }
 
         .gif-area {
@@ -80,16 +79,14 @@
 
         #yesBtn { background-color: #ff4d6d; z-index: 20; }
         #yesBtn:hover { transform: scale(1.1); box-shadow: 0 0 15px #ff4d6d80; }
-
         #noBtn { background-color: #333; }
         
-        /* The Romantic Note Button (Hidden initially) */
         #noteTriggerBtn {
             background-color: #fff;
             color: #ff4d6d;
             border: 2px solid #ff4d6d;
             margin-top: 20px;
-            display: none; /* Hidden until Yes is clicked */
+            display: none; 
             animation: pulse 2s infinite;
         }
 
@@ -107,14 +104,14 @@
 
         .hidden { display: none; }
 
-        /* --- ROMANTIC NOTE STYLES --- */
+        /* --- ROMANTIC NOTE STYLES (Fixed for Scrolling) --- */
         #noteOverlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85); /* Dark dimming */
+            background: rgba(0, 0, 0, 0.85);
             z-index: 100;
             display: flex;
             justify-content: center;
@@ -130,15 +127,21 @@
         }
 
         .note-paper {
-            background: #fff9f0; /* Paper color */
+            background: #fff9f0;
             width: 85%;
             max-width: 500px;
-            padding: 40px;
+            /* SCROLL FIXES START HERE */
+            max-height: 80vh; /* Limits height to 80% of screen */
+            overflow-y: auto; /* Adds scrollbar if text is too long */
+            /* SCROLL FIXES END HERE */
+            padding: 30px;
             border-radius: 5px;
             box-shadow: 0 0 30px rgba(0,0,0,0.5);
             position: relative;
             transform: translateY(20px);
             transition: transform 1s ease;
+            display: flex;
+            flex-direction: column;
         }
         
         #noteOverlay.active .note-paper {
@@ -146,12 +149,13 @@
         }
 
         .note-text {
-            font-family: 'Dancing Script', cursive; /* Handwriting font */
-            font-size: 24px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 22px; /* Slightly smaller for better fit */
             color: #4a4a4a;
             line-height: 1.6;
             min-height: 100px;
-            white-space: pre-wrap; /* Preserves line breaks */
+            white-space: pre-wrap;
+            text-align: left; /* Better for reading */
         }
 
         .signature {
@@ -164,11 +168,23 @@
             transition: opacity 1s;
         }
 
-        /* Mobile adjustments */
+        /* Scrollbar styling for a cleaner look */
+        .note-paper::-webkit-scrollbar {
+            width: 8px;
+        }
+        .note-paper::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 5px;
+        }
+        .note-paper::-webkit-scrollbar-thumb {
+            background: #ffb7b2; 
+            border-radius: 5px;
+        }
+
         @media (max-width: 480px) {
             h1 { font-size: 22px; }
             button { padding: 10px 20px; font-size: 16px; }
-            .note-text { font-size: 20px; }
+            .note-text { font-size: 18px; }
         }
     </style>
 </head>
@@ -223,7 +239,6 @@
         const signature = document.getElementById('signature');
         const bgMusic = document.getElementById('bgMusic');
 
-               // --- CUSTOMIZE YOUR MESSAGE HERE ---
         const romanticMessage = `My Dearest Aqib,
 
 I created this little animation just to see you smile, but the truth is, no amount of code could ever capture what you actually mean to me.
@@ -239,10 +254,9 @@ Ab tu hi bata, tujhe main yaad karoon ya saans loon?"
 So tell me, do I remember you, or do I just breathe?)
 
 I choose you. Not just for today, but for all the boring days, the hard days, and the beautiful days to come. 
-Happy Valentine's Day. You are the poetry I never knew how to write.
- ❤️`;
 
-        // Logic to move the No button
+Happy Valentine's Day. You are the poetry I never knew how to write. ❤️`;
+
         function moveButton() {
             noBtn.classList.add('absolute-move');
             const viewportWidth = window.innerWidth;
@@ -259,43 +273,37 @@ Happy Valentine's Day. You are the poetry I never knew how to write.
         noBtn.addEventListener('click', (e) => { e.preventDefault(); moveButton(); });
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); }, { passive: false });
 
-        // Yes Button Logic
         yesBtn.addEventListener('click', () => {
             questionDiv.classList.add('hidden');
             successDiv.classList.remove('hidden');
             
-            // Trigger Confetti
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => { confetti({ particleCount: 100, spread: 100, origin: { y: 0.6 } }); }, 500);
 
-            // Show the "Read Note" button after 2 seconds
             setTimeout(() => {
                 noteTriggerBtn.style.display = 'inline-block';
             }, 2000);
         });
 
-        // Note Trigger Logic
         noteTriggerBtn.addEventListener('click', () => {
             noteOverlay.classList.add('active');
-            bgMusic.volume = 0.3; // Set volume low
+            bgMusic.volume = 0.3; 
             bgMusic.play().catch(e => console.log("Audio play failed usually due to browser permissions"));
             
-            // Start Typewriter effect after a slight delay
             setTimeout(typeWriter, 1000);
         });
 
-        // Typewriter Effect
         let i = 0;
         function typeWriter() {
             if (i < romanticMessage.length) {
-                // Add next character
                 typewriterText.innerHTML += romanticMessage.charAt(i);
                 i++;
-                // Random typing speed for realism (between 30ms and 80ms)
                 setTimeout(typeWriter, Math.random() * 50 + 30);
             } else {
-                // Show signature when done
                 signature.style.opacity = '1';
+                // Optional: Scroll to bottom automatically when done
+                const paper = document.querySelector('.note-paper');
+                paper.scrollTo({ top: paper.scrollHeight, behavior: 'smooth' });
             }
         }
     </script>
