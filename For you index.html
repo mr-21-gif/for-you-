@@ -1,154 +1,139 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Be My Valentine 💘</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Afreen</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #ffe4e1; /* Pink background like video */
+            font-family: 'Arial', sans-serif;
+            overflow: hidden; /* Stop scrolling when button moves */
+        }
+        
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
 
-  <!-- Cute Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+        .gif-area img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
 
-  <!-- Confetti Library -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+        h1 {
+            color: #ff4d6d;
+            font-size: 26px;
+            margin: 20px 0;
+        }
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Comic Neue', cursive;
-    }
+        .btn-container {
+            margin-top: 20px;
+            height: 60px; /* Space for buttons */
+        }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #ffd6e7;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.2s;
+            margin: 0 10px;
+        }
 
-    .card {
-      background: white;
-      padding: 2rem;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      text-align: center;
-      max-width: 350px;
-      width: 90%;
-    }
+        #yesBtn {
+            background-color: #ff4d6d; /* Pink/Red for Yes */
+        }
+        
+        #yesBtn:hover {
+            transform: scale(1.1);
+        }
 
-    img {
-      width: 180px;
-      max-width: 100%;
-      margin-bottom: 1rem;
-    }
+        #noBtn {
+            background-color: #333; /* Dark button for No */
+            position: absolute; /* Allows it to move freely */
+        }
 
-    h1 {
-      color: #ff4d88;
-      margin-bottom: 1.5rem;
-    }
-
-    .buttons {
-      position: relative;
-      height: 80px;
-    }
-
-    button {
-      padding: 12px 24px;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    #yesBtn {
-      background: #ff4d88;
-      color: white;
-      margin-right: 10px;
-    }
-
-    #yesBtn:hover {
-      transform: scale(1.1);
-    }
-
-    #noBtn {
-      background: #eee;
-      color: #333;
-      position: absolute;
-    }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.4rem;
-      }
-      button {
-        font-size: 1rem;
-      }
-    }
-  </style>
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="card" id="card">
-    <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" alt="Cute Cat GIF">
-    <h1>Will you be my Valentine? 💕</h1>
+    <div class="card">
+        <div id="question">
+            <div class="gif-area">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2QyZ.../giphy.gif" 
+                     onerror="this.src='https://media.giphy.com/media/0OgdJVNjbcIwa2pH03/giphy.gif'"
+                     alt="Cute Cat">
+            </div>
+            <h1>Afreen will you be my valentine?</h1>
+            <div class="btn-container">
+                <button id="yesBtn">Yes 💖</button>
+                <button id="noBtn">No</button>
+            </div>
+        </div>
 
-    <div class="buttons">
-      <button id="yesBtn">Yes 💖</button>
-      <button id="noBtn">No 🙃</button>
+        <div id="success" class="hidden">
+            <div class="gif-area">
+                <img src="https://media.giphy.com/media/iCVzZwwE6QhTVT6xN3/giphy.gif" alt="Happy">
+            </div>
+            <h1>YAY! 💖</h1>
+        </div>
     </div>
-  </div>
 
-  <script>
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const card = document.getElementById("card");
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const questionDiv = document.getElementById('question');
+        const successDiv = document.getElementById('success');
 
-    function moveNoButton() {
-      const padding = 20;
-      const maxX = window.innerWidth - noBtn.offsetWidth - padding;
-      const maxY = window.innerHeight - noBtn.offsetHeight - padding;
-
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
-
-      noBtn.style.left = `${x}px`;
-      noBtn.style.top = `${y}px`;
-    }
-
-    // Desktop hover
-    noBtn.addEventListener("mouseenter", moveNoButton);
-
-    // Mobile touch
-    noBtn.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      moveNoButton();
-    });
-
-    yesBtn.addEventListener("click", () => {
-      card.innerHTML = `
-        <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="Happy GIF">
-        <h1>YAY!!! 🎉💘</h1>
-      `;
-
-      // Confetti burst
-      const duration = 2 * 1000;
-      const end = Date.now() + duration;
-
-      (function frame() {
-        confetti({
-          particleCount: 6,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
+        // Logic to make "No" button run away
+        function moveButton() {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 20);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 20);
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
         }
-      })();
-    });
-  </script>
 
+        // Move on Hover (Desktop)
+        noBtn.addEventListener('mouseover', moveButton);
+        // Move on Touch (Mobile)
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveButton();
+        });
+
+        // Click Yes Logic
+        yesBtn.addEventListener('click', () => {
+            questionDiv.classList.add('hidden');
+            successDiv.classList.remove('hidden');
+            
+            // Fire Confetti
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        });
+    </script>
 </body>
 </html>
